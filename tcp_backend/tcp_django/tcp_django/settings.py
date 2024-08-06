@@ -13,26 +13,32 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in production secret! (본인 원래 SECRET_KEY 설정 그대로)
 SECRET_KEY = "django-insecure-w)cf=!mcmu%@dmq%zp998w((o0#+_b1$4g1gl2#@r@hi^5y+7("
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.13', 'localhost', '127.0.0.1']
+
+
+# .env 파일에 개인 IP 설정한 값 가져오기
+load_dotenv()
+
+MY_IP = os.getenv('MY_IP')
+
+ALLOWED_HOSTS = [MY_IP]
+
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,10 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'corsheaders',
     'rest_framework',
-    'django_extensions',
-    'board',
+    'kakao_oauth',
+    'account',
+    'community',
+    'viewCount',
 ]
 
 MIDDLEWARE = [
@@ -57,11 +66,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
 KAKAO = {
     'LOGIN_URL': os.getenv('KAKAO_LOGIN_URL'),
     'CLIENT_ID': os.getenv('KAKAO_CLIENT_ID'),
@@ -70,13 +74,21 @@ KAKAO = {
     'USERINFO_REQUEST_URI': os.getenv('KAKAO_USERINFO_REQUEST_URI'),
 }
 
+
+
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+#     "http://127.0.0.1:8080",
+# ]
 print('CORS_ALLOWED_ORIGINS:', CORS_ALLOWED_ORIGINS)
 
+# CORS 설정 옵션
 CORS_ALLOW_CREDENTIALS = True
 
+# CORS 헤더와 메서드 추가 설정 (필요 시)
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
@@ -119,6 +131,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "tcp_django.wsgi.application"
 
 
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -151,6 +164,7 @@ CACHES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -170,12 +184,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
